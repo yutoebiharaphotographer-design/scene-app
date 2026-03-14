@@ -397,8 +397,8 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 
   <div id="route-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;">
     <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:rgba(26,26,24,0.15);margin-bottom:10px">No Spots Yet</div>
-    <div style="font-size:12px;color:var(--gray);letter-spacing:0.1em;margin-bottom:28px">Exploreでスポットを保存してルートを作ろう</div>
-    <button onclick="showTab('explore')" style="padding:12px 28px;background:var(--black);color:var(--cream);border-radius:10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);">Exploreへ</button>
+    <div style="font-size:12px;color:var(--gray);letter-spacing:0.1em;margin-bottom:28px">「探す」でスポットを保存して、ルートを作ろう</div>
+    <button onclick="showTab('explore')" style="padding:12px 28px;background:var(--black);color:var(--cream);border-radius:10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);">探すへ</button>
   </div>
 
   <div id="route-content" style="display:none;flex:1;overflow-y:auto;padding-bottom:100px;">
@@ -437,11 +437,43 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
   </div>
 </div>
 
-<!-- SAVED (stub) -->
-<div class="screen" id="screen-saved" style="align-items:center; justify-content:center; background:var(--cream);">
-  <div style="text-align:center; padding:40px">
-    <div style="font-family:var(--serif-en); font-size:32px; font-weight:300; color:rgba(26,26,24,0.15); margin-bottom:12px">Saved</div>
-    <div style="font-size:12px; color:var(--gray); letter-spacing:0.1em">Coming Soon</div>
+<!-- SAVED -->
+<div class="screen" id="screen-saved" style="flex-direction:column;background:var(--cream);">
+  <div class="top-nav">
+    <div class="nav-logo" style="font-size:18px;letter-spacing:0.1em">保存済み</div>
+    <div class="nav-right">
+      <div class="nav-btn" id="saved-filter-btn">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 4h12M4 8h8M6 12h4"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- フィルター -->
+  <div style="padding:12px 20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;border-bottom:0.5px solid var(--light);" id="saved-filter-bar">
+    <button class="filter-btn active" data-scat="all" onclick="setSavedCat(this,'all')">All</button>
+    <button class="filter-btn" data-scat="café" onclick="setSavedCat(this,'café')">Café</button>
+    <button class="filter-btn" data-scat="nature" onclick="setSavedCat(this,'nature')">Nature</button>
+    <button class="filter-btn" data-scat="art" onclick="setSavedCat(this,'art')">Art</button>
+    <button class="filter-btn" data-scat="architecture" onclick="setSavedCat(this,'architecture')">建築</button>
+    <button class="filter-btn" data-scat="market" onclick="setSavedCat(this,'market')">Market</button>
+  </div>
+
+  <!-- 空状態 -->
+  <div id="saved-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;">
+    <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:rgba(26,26,24,0.15);margin-bottom:10px">No Saved Spots</div>
+    <div style="font-size:12px;color:var(--gray);letter-spacing:0.1em;margin-bottom:28px">気になるスポットを保存しよう</div>
+    <button onclick="showTab('explore')" style="padding:12px 28px;background:var(--black);color:var(--cream);border-radius:10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);">スポットを探す</button>
+  </div>
+
+  <!-- 保存済みリスト -->
+  <div id="saved-content" style="display:none;flex:1;overflow-y:auto;padding-bottom:100px;">
+    <div style="padding:14px 20px 8px;display:flex;justify-content:space-between;align-items:center;">
+      <div id="saved-count" style="font-size:10px;letter-spacing:0.25em;color:var(--gray);text-transform:uppercase;">0 spots</div>
+      <button onclick="showTab('route')" id="saved-to-route-btn" style="display:none;padding:7px 16px;background:var(--black);color:var(--cream);border-radius:20px;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);white-space:nowrap;">
+        保存したスポットでルートを作る
+      </button>
+    </div>
+    <div id="saved-grid" style="padding:4px 20px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
   </div>
 </div>
 
@@ -501,19 +533,19 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 <div class="bottom-nav" id="bottom-nav" style="display:none">
   <div class="bn active" onclick="showTab('home')">
     <svg viewBox="0 0 20 20" fill="none" stroke-width="1.4"><path d="M3 9l7-7 7 7v9H13v-5H7v5H3z"/></svg>
-    <div class="bn-lbl">Home</div>
+    <div class="bn-lbl">ホーム</div>
   </div>
   <div class="bn" onclick="showTab('explore')">
     <svg viewBox="0 0 20 20" fill="none" stroke-width="1.4"><circle cx="9" cy="9" r="6"/><path d="M15 15l3 3"/></svg>
-    <div class="bn-lbl">Explore</div>
+    <div class="bn-lbl">探す</div>
   </div>
   <div class="bn" onclick="showTab('route')">
     <svg viewBox="0 0 20 20" fill="none" stroke-width="1.4"><path d="M2 14l4-4 3 3 4-6"/><circle cx="14" cy="4" r="2"/></svg>
-    <div class="bn-lbl">Route</div>
+    <div class="bn-lbl">ルート</div>
   </div>
   <div class="bn" onclick="showTab('saved')">
     <svg viewBox="0 0 20 20" fill="none" stroke-width="1.4"><path d="M4 4h12v13l-6-3.5L4 17z"/></svg>
-    <div class="bn-lbl">Saved</div>
+    <div class="bn-lbl">保存済み</div>
   </div>
 </div>
 
@@ -555,6 +587,7 @@ function showTab(tab) {
   showScreen(tab);
   document.getElementById('bottom-nav').style.display = 'flex';
   setActiveTab(tab);
+  if (tab === 'saved') renderSaved();
 }
 
 function setActiveTab(tab) {
@@ -709,7 +742,8 @@ function renderRoute() {
   document.getElementById('route-count').textContent = sorted.length;
   const areas = [...new Set(sorted.map(s => s.area))];
   document.getElementById('route-area').textContent = areas.slice(0,2).join(' · ') + (areas.length > 2 ? '…' : '');
-  document.getElementById('route-time').textContent = `約${Math.round(sorted.length * 18)}分`;
+  // 2件以上でないと所要時間は出さない
+  document.getElementById('route-time').textContent = sorted.length >= 2 ? `約${Math.round((sorted.length - 1) * 20)}分` : '—';
   document.getElementById('route-maps-btn').onclick = () => {
     const wps = sorted.map(s => encodeURIComponent(s.address || s.name)).join('/');
     window.open(`https://www.google.com/maps/dir/${wps}`, '_blank');
@@ -745,6 +779,76 @@ function sortByArea(spots) {
   });
 }
 document.getElementById('route-clear-btn').onclick = () => { routeSpots=[]; renderRoute(); };
+// ── SAVED SCREEN ──
+let savedCat = 'all';
+
+function setSavedCat(el, cat) {
+  document.querySelectorAll('[data-scat]').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  savedCat = cat;
+  renderSaved();
+}
+
+function renderSaved() {
+  let spots = allSpots.filter(s => isSaved(s.id));
+  if (savedCat !== 'all') spots = spots.filter(s => s.category === savedCat);
+
+  const empty = document.getElementById('saved-empty');
+  const content = document.getElementById('saved-content');
+  const countEl = document.getElementById('saved-count');
+  const routeBtn = document.getElementById('saved-to-route-btn');
+
+  if (!spots.length) {
+    empty.style.display = 'flex';
+    content.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  content.style.display = 'block';
+  countEl.textContent = `${spots.length} spots`;
+  routeBtn.style.display = savedSpots.length > 0 ? 'block' : 'none';
+
+  document.getElementById('saved-grid').innerHTML = spots.map(s => `
+    <div style="cursor:pointer;border-radius:12px;overflow:hidden;background:var(--black);position:relative;transition:transform 0.3s;" onclick="openDetail(${s.id})">
+      <div style="aspect-ratio:3/4;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:${grad(s.category)}"></div>
+        ${s.cover_url ? `<img src="${s.cover_url}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,rgba(0,0,0,0.75) 100%)"></div>
+        <button onclick="event.stopPropagation();toggleSave(${s.id});renderSaved();" style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(201,169,110,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1A1A18" stroke-width="1.5"><path d="M2 2l8 8M10 2L2 10"/></svg>
+        </button>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:10px;">
+          <div style="font-size:8px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:3px">${lbl(s.category)}</div>
+          <div style="font-family:var(--serif-en);font-size:14px;font-weight:300;color:var(--cream);line-height:1.2">${s.name}</div>
+          <div style="font-size:9px;color:rgba(245,242,237,0.5);margin-top:2px">${s.area}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── TOAST ──
+function showToastOnce(msg, tab) {
+  const key = 'scene_toast_' + msg.replace(/\s/g,'_');
+  if (localStorage.getItem(key)) return; // 初回のみ
+  localStorage.setItem(key, '1');
+  showToast(msg, tab);
+}
+
+function showToast(msg, tab) {
+  let toast = document.getElementById('app-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'app-toast';
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--cream);padding:12px 20px;border-radius:24px;font-size:11px;letter-spacing:0.1em;white-space:nowrap;z-index:500;cursor:pointer;border:0.5px solid rgba(201,169,110,0.3);transition:opacity 0.3s;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  toast.onclick = tab ? () => { showTab(tab); toast.style.opacity='0'; } : null;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+}
+
 // ── SAVE (localStorage) ──
 let savedSpots = JSON.parse(localStorage.getItem('scene_saved') || '[]');
 
@@ -759,6 +863,9 @@ function toggleSave(id) {
   localStorage.setItem('scene_saved', JSON.stringify(savedSpots));
   updateSaveBtn(id);
   updateRouteBanner();
+  if (document.getElementById('screen-saved').classList.contains('active')) renderSaved();
+  // 保存時にトースト表示
+  if (isSaved(id)) showToastOnce('保存済みタブからルートが作れます', 'saved');
 }
 
 function updateSaveBtn(id) {
@@ -796,6 +903,13 @@ document.getElementById('d-route-btn').addEventListener('click', function() {
     document.getElementById('detail-overlay').classList.remove('show');
     showTab('route');
   }
+});
+
+// SavedタブからRouteを作る：保存済み全件をRouteに流し込む
+document.getElementById('saved-to-route-btn').addEventListener('click', function() {
+  routeSpots = [...savedSpots];
+  renderRoute();
+  showTab('route');
 });
 
 // ── LOAD ──
