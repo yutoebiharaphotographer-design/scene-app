@@ -485,9 +485,13 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
         <div style="font-size:20px">🌅</div>
         <div><div class="best-lbl">Best Time to Shoot</div><div class="best-val" id="d-best"></div></div>
       </div>
+      <button id="d-map-btn" style="width:100%;padding:13px;background:transparent;border:0.5px solid var(--light);border-radius:12px;font-family:var(--sans);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:7px;">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="7" cy="6" r="2.5"/><path d="M7 1C4.2 1 2 3.2 2 6c0 4 5 8 5 8s5-4 5-8c0-2.8-2.2-5-5-5z"/></svg>
+        Google Maps で開く
+      </button>
       <div class="d-btns">
-        <button class="btn-bk"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h10v11l-5-3-5 3V2z"/></svg>保存</button>
-        <button class="btn-rt" id="d-map-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l4-4 3 3 3-5"/><circle cx="12" cy="3" r="1.5"/></svg>Google Maps</button>
+        <button class="btn-bk" id="d-save-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h10v11l-5-3-5 3V2z"/></svg><span id="d-save-label">保存</span></button>
+        <button class="btn-rt" id="d-route-btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l4-4 3 3 3-5"/><circle cx="12" cy="3" r="1.5"/></svg>ルートに追加</button>
       </div>
     </div>
   </div>
@@ -674,6 +678,8 @@ function openDetail(id) {
   };
   document.getElementById('detail-overlay').classList.add('show');
   document.querySelector('.detail-sheet').scrollTop = 0;
+  // 保存状態を反映
+  setTimeout(() => updateSaveBtn(id), 0);
 }
 
 document.getElementById('d-close').onclick = () => document.getElementById('detail-overlay').classList.remove('show');
@@ -739,10 +745,57 @@ function sortByArea(spots) {
   });
 }
 document.getElementById('route-clear-btn').onclick = () => { routeSpots=[]; renderRoute(); };
-document.querySelector('.btn-rt').addEventListener('click', function() {
+// ── SAVE (localStorage) ──
+let savedSpots = JSON.parse(localStorage.getItem('scene_saved') || '[]');
+
+function isSaved(id) { return savedSpots.includes(id); }
+
+function toggleSave(id) {
+  if (isSaved(id)) {
+    savedSpots = savedSpots.filter(x => x !== id);
+  } else {
+    savedSpots.push(id);
+  }
+  localStorage.setItem('scene_saved', JSON.stringify(savedSpots));
+  updateSaveBtn(id);
+  updateRouteBanner();
+}
+
+function updateSaveBtn(id) {
+  const btn = document.getElementById('d-save-btn');
+  const lbl = document.getElementById('d-save-label');
+  if (!btn) return;
+  if (isSaved(id)) {
+    btn.style.background = 'var(--gold)';
+    btn.style.color = 'var(--black)';
+    lbl.textContent = '保存済み';
+  } else {
+    btn.style.background = 'var(--black)';
+    btn.style.color = 'var(--cream)';
+    lbl.textContent = '保存';
+  }
+}
+
+function updateRouteBanner() {
+  const el = document.querySelector('.rb-title');
+  if (el) el.textContent = `保存済み${savedSpots.length}件でルートを作る`;
+}
+
+document.getElementById('d-save-btn').addEventListener('click', function() {
   const name = document.getElementById('d-name').textContent;
   const spot = allSpots.find(s => s.name === name);
-  if (spot) { addToRoute(spot.id); document.getElementById('detail-overlay').classList.remove('show'); showTab('route'); }
+  if (spot) toggleSave(spot.id);
+});
+
+// ── ROUTE ADD from detail ──
+document.getElementById('d-route-btn').addEventListener('click', function() {
+  const name = document.getElementById('d-name').textContent;
+  const spot = allSpots.find(s => s.name === name);
+  if (spot) {
+    addToRoute(spot.id);
+    document.getElementById('detail-overlay').classList.remove('show');
+    showTab('route');
+  }
 });
 
 // ── LOAD ──
