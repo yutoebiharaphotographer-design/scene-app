@@ -384,11 +384,56 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
   <div class="spot-grid" id="spot-grid"></div>
 </div>
 
-<!-- ROUTE (stub) -->
-<div class="screen" id="screen-route" style="align-items:center; justify-content:center; background:var(--cream);">
-  <div style="text-align:center; padding:40px">
-    <div style="font-family:var(--serif-en); font-size:32px; font-weight:300; color:rgba(26,26,24,0.15); margin-bottom:12px">Route</div>
-    <div style="font-size:12px; color:var(--gray); letter-spacing:0.1em">Coming Soon</div>
+<!-- ROUTE -->
+<div class="screen" id="screen-route" style="flex-direction:column;background:var(--cream);">
+  <div class="top-nav">
+    <div class="nav-logo" style="font-size:18px;letter-spacing:0.1em">Route</div>
+    <div class="nav-right">
+      <div class="nav-btn" id="route-clear-btn">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8a6 6 0 106-6"/><path d="M5 5L2 8l3 3"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div id="route-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;">
+    <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:rgba(26,26,24,0.15);margin-bottom:10px">No Spots Yet</div>
+    <div style="font-size:12px;color:var(--gray);letter-spacing:0.1em;margin-bottom:28px">Exploreでスポットを保存してルートを作ろう</div>
+    <button onclick="showTab('explore')" style="padding:12px 28px;background:var(--black);color:var(--cream);border-radius:10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);">Exploreへ</button>
+  </div>
+
+  <div id="route-content" style="display:none;flex:1;overflow-y:auto;padding-bottom:100px;">
+    <div style="margin:16px 20px 0;background:var(--black);border-radius:14px;padding:16px 18px;display:flex;gap:0;align-items:center;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:9px;letter-spacing:0.3em;color:rgba(245,242,237,0.4);text-transform:uppercase;margin-bottom:4px">Spots</div>
+        <div id="route-count" style="font-family:var(--serif-en);font-size:24px;font-weight:300;color:var(--cream)">0</div>
+      </div>
+      <div style="width:0.5px;height:32px;background:rgba(245,242,237,0.1)"></div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:9px;letter-spacing:0.3em;color:rgba(245,242,237,0.4);text-transform:uppercase;margin-bottom:4px">移動時間</div>
+        <div id="route-time" style="font-family:var(--serif-en);font-size:20px;font-weight:300;color:var(--cream)">—</div>
+      </div>
+      <div style="width:0.5px;height:32px;background:rgba(245,242,237,0.1)"></div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:9px;letter-spacing:0.3em;color:rgba(245,242,237,0.4);text-transform:uppercase;margin-bottom:4px">エリア</div>
+        <div id="route-area" style="font-family:var(--serif-en);font-size:14px;font-weight:300;color:var(--gold)">—</div>
+      </div>
+    </div>
+
+    <div style="margin:12px 20px 0;">
+      <button id="route-maps-btn" style="width:100%;padding:15px;background:var(--gold);color:var(--black);border-radius:12px;font-family:var(--sans);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="6" r="2.5"/><path d="M7 1C4.2 1 2 3.2 2 6c0 4 5 8 5 8s5-4 5-8c0-2.8-2.2-5-5-5z"/></svg>
+        Google Maps でルートを開く
+      </button>
+    </div>
+
+    <div style="padding:20px 20px 0;">
+      <div style="font-size:9px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">Spots in Order</div>
+      <div id="route-list"></div>
+    </div>
+
+    <div style="padding:12px 20px 0;">
+      <button onclick="showTab('explore')" style="width:100%;padding:14px;background:transparent;border:0.5px dashed rgba(26,26,24,0.2);border-radius:12px;font-family:var(--sans);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(26,26,24,0.35);cursor:pointer;">+ スポットを追加</button>
+    </div>
   </div>
 </div>
 
@@ -638,6 +683,67 @@ document.getElementById('detail-overlay').addEventListener('click', e => {
 
 // ── HOME HERO tap ──
 document.getElementById('home-hero').onclick = () => openDetail(6);
+
+// ── ROUTE ──
+let routeSpots = [];
+
+function addToRoute(id) {
+  if (!routeSpots.includes(id)) { routeSpots.push(id); renderRoute(); }
+}
+function removeFromRoute(id) {
+  routeSpots = routeSpots.filter(x => x !== id); renderRoute();
+}
+function renderRoute() {
+  const spots = routeSpots.map(id => allSpots.find(s => s.id === id)).filter(Boolean);
+  const empty = document.getElementById('route-empty');
+  const content = document.getElementById('route-content');
+  if (!spots.length) { empty.style.display='flex'; content.style.display='none'; return; }
+  empty.style.display = 'none'; content.style.display = 'block';
+  const sorted = sortByArea(spots);
+  document.getElementById('route-count').textContent = sorted.length;
+  const areas = [...new Set(sorted.map(s => s.area))];
+  document.getElementById('route-area').textContent = areas.slice(0,2).join(' · ') + (areas.length > 2 ? '…' : '');
+  document.getElementById('route-time').textContent = `約${Math.round(sorted.length * 18)}分`;
+  document.getElementById('route-maps-btn').onclick = () => {
+    const wps = sorted.map(s => encodeURIComponent(s.address || s.name)).join('/');
+    window.open(`https://www.google.com/maps/dir/${wps}`, '_blank');
+  };
+  const list = document.getElementById('route-list');
+  list.innerHTML = sorted.map((s, i) => `
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:0.5px solid rgba(26,26,24,0.07);position:relative;">
+      ${i < sorted.length - 1 ? `<div style="position:absolute;left:15px;top:44px;bottom:-14px;width:1px;background:rgba(201,169,110,0.25);"></div>` : ''}
+      <div style="width:30px;height:30px;border-radius:50%;background:${i===0?'var(--gold)':'var(--black)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;">
+        <span style="font-size:11px;color:${i===0?'var(--black)':'var(--cream)'};">${i+1}</span>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:9px;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:3px">${lbl(s.category)}</div>
+        <div style="font-family:var(--serif-en);font-size:16px;font-weight:300;color:var(--black);line-height:1.2;margin-bottom:2px">${s.name}</div>
+        <div style="font-size:11px;color:var(--gray)">${s.area} · ${(s.best_time||'').split('–')[0].trim() || '—'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+        <button onclick="openDetail(${s.id})" style="width:32px;height:32px;border-radius:8px;border:0.5px solid var(--light);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="6.5" cy="6.5" r="5"/><path d="M6.5 4.5v2l1.5 1.5"/></svg>
+        </button>
+        <button onclick="removeFromRoute(${s.id})" style="width:32px;height:32px;border-radius:8px;border:0.5px solid rgba(200,60,60,0.2);background:rgba(200,60,60,0.04);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#c43c3c" stroke-width="1.3"><path d="M2 2l9 9M11 2L2 11"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+}
+function sortByArea(spots) {
+  const order = ['浅草','上野','蔵前','清澄白河','築地','銀座','丸の内','六本木','麻布','恵比寿','代官山','中目黒','目黒川','渋谷','代々木公園','新宿','吉祥寺','下北沢','三軒茶屋','世田谷','豊洲','押上','立川'];
+  return [...spots].sort((a,b) => {
+    const ai = order.findIndex(x => a.area.includes(x));
+    const bi = order.findIndex(x => b.area.includes(x));
+    return (ai===-1?99:ai)-(bi===-1?99:bi);
+  });
+}
+document.getElementById('route-clear-btn').onclick = () => { routeSpots=[]; renderRoute(); };
+document.querySelector('.btn-rt').addEventListener('click', function() {
+  const name = document.getElementById('d-name').textContent;
+  const spot = allSpots.find(s => s.name === name);
+  if (spot) { addToRoute(spot.id); document.getElementById('detail-overlay').classList.remove('show'); showTab('route'); }
+});
 
 // ── LOAD ──
 async function init() {
