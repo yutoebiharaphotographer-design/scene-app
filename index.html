@@ -240,6 +240,12 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 <body>
 
 <!-- LOADING -->
+<div id="transition-overlay" style="position:fixed;inset:0;background:rgba(26,26,24,0.75);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none;">
+  <div id="transition-scan" style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,#C9A96E,transparent);top:-2px;"></div>
+  <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:300;letter-spacing:0.35em;color:#F5F2ED;">SCENE</div>
+  <div style="font-size:9px;letter-spacing:0.45em;color:#C9A96E;text-transform:uppercase;">Loading</div>
+</div>
+
 <div class="screen active" id="screen-loading">
   <div class="loading-logo">SCENE</div>
 </div>
@@ -331,28 +337,11 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 
   <div class="sec-head" style="padding-top:24px">
     <div class="sec-title-sm">保存済み</div>
-    <div class="sec-more">すべて見る</div>
+    <div class="sec-more" onclick="showTab('saved')">すべて見る</div>
   </div>
-  <div class="bm-row">
-    <div class="bm-card">
-      <div class="bm-photo"><div class="bm-photo-bg" style="background:linear-gradient(145deg,#3d3830,#1e1c16)"></div><img src="https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?w=240&h=160&fit=crop" alt=""><div class="bm-dim"></div></div>
-      <div class="bm-info"><div class="bm-name">OGAWA COFFEE</div><div class="bm-area">下北沢</div></div>
-    </div>
-    <div class="bm-card">
-      <div class="bm-photo"><div class="bm-photo-bg" style="background:linear-gradient(145deg,#302e2c,#1c1c1a)"></div><img src="https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?w=240&h=160&fit=crop" alt=""><div class="bm-dim"></div></div>
-      <div class="bm-info"><div class="bm-name">渋谷スクランブル</div><div class="bm-area">渋谷</div></div>
-    </div>
-    <div class="bm-card">
-      <div class="bm-photo"><div class="bm-photo-bg" style="background:linear-gradient(145deg,#2c2820,#1c1a16)"></div><img src="https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?w=240&h=160&fit=crop" alt=""><div class="bm-dim"></div></div>
-      <div class="bm-info"><div class="bm-name">PAYSAGE 代官山</div><div class="bm-area">代官山</div></div>
-    </div>
-    <div class="bm-card">
-      <div class="bm-add"><svg viewBox="0 0 20 20" fill="none" stroke-width="1.5"><path d="M10 4v12M4 10h12"/></svg></div>
-      <div class="bm-info"><div class="bm-name" style="color:rgba(26,26,24,0.28)">追加する</div><div class="bm-area">—</div></div>
-    </div>
-  </div>
+  <div class="bm-row" id="home-bm-row"></div>
 
-  <div class="route-banner" onclick="showTab('route')">
+  <div class="route-banner" onclick="openRouteFromHome()">
     <div class="rb-icon"><svg viewBox="0 0 18 18" fill="none" stroke="#C9A96E" stroke-width="1.4"><path d="M2 14l4-4 3 3 4-6"/><circle cx="14" cy="4" r="2"/></svg></div>
     <div class="rb-text">
       <div class="rb-lbl">Route Builder</div>
@@ -469,7 +458,7 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
   <div id="saved-content" style="display:none;flex:1;overflow-y:auto;padding-bottom:100px;">
     <div style="padding:14px 20px 8px;display:flex;justify-content:space-between;align-items:center;">
       <div id="saved-count" style="font-size:10px;letter-spacing:0.25em;color:var(--gray);text-transform:uppercase;">0 spots</div>
-      <button onclick="showTab('route')" id="saved-to-route-btn" style="display:none;padding:7px 16px;background:var(--black);color:var(--cream);border-radius:20px;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);white-space:nowrap;">
+      <button onclick="openRouteFromHome()" id="saved-to-route-btn" style="display:none;padding:7px 16px;background:var(--black);color:var(--cream);border-radius:20px;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);white-space:nowrap;">
         保存したスポットでルートを作る
       </button>
     </div>
@@ -550,6 +539,48 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 </div>
 
 <script>
+// ── TRANSITION ──
+function transition(callback) {
+  const overlay = document.getElementById('transition-overlay');
+  const scan = document.getElementById('transition-scan');
+
+  // 常にクリックを通過させる
+  overlay.style.pointerEvents = 'none';
+
+  // 表示
+  overlay.style.opacity = '1';
+  overlay.style.display = 'flex';
+
+  // スキャンライン初期化
+  scan.style.transition = 'none';
+  scan.style.top = '-2px';
+  scan.style.opacity = '1';
+
+  // アニメーション開始
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      scan.style.transition = 'top 0.7s linear';
+      scan.style.top = '102%';
+    });
+  });
+
+  // 画面切替
+  setTimeout(() => {
+    callback();
+  }, 380);
+
+  // フェードアウト
+  setTimeout(() => {
+    overlay.style.transition = 'opacity 0.3s ease';
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      overlay.style.opacity = '1';
+      overlay.style.transition = '';
+    }, 320);
+  }, 600);
+}
+
 const SB_URL = 'https://vuxsvwymtjamjgvdyxuz.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1eHN2d3ltdGphbWpndmR5eHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MTMyMDcsImV4cCI6MjA4ODk4OTIwN30.QSZhQtWTp-JzUhJFweufYh71gqLOVLR1KwhmqHTN488';
 const db = supabase.createClient(SB_URL, SB_KEY);
@@ -584,10 +615,12 @@ function showExplore() {
 }
 
 function showTab(tab) {
-  showScreen(tab);
-  document.getElementById('bottom-nav').style.display = 'flex';
-  setActiveTab(tab);
-  if (tab === 'saved') renderSaved();
+  transition(() => {
+    showScreen(tab);
+    document.getElementById('bottom-nav').style.display = 'flex';
+    setActiveTab(tab);
+    if (tab === 'saved') renderSaved();
+  }, 420);
 }
 
 function setActiveTab(tab) {
@@ -883,9 +916,60 @@ function updateSaveBtn(id) {
   }
 }
 
+function openRouteFromHome() {
+  if (savedSpots.length === 0) {
+    // 保存済みがなければ探すタブへ
+    showTab('explore');
+    return;
+  }
+  // 保存済みスポットを全部ルートに追加してRouteタブへ
+  routeSpots = [...savedSpots];
+  renderRoute();
+  showTab('route');
+}
+
 function updateRouteBanner() {
+  // ルートバナーのテキスト更新
   const el = document.querySelector('.rb-title');
-  if (el) el.textContent = `保存済み${savedSpots.length}件でルートを作る`;
+  if (el) {
+    if (savedSpots.length === 0) {
+      el.textContent = 'スポットを保存してルートを作ろう';
+    } else {
+      el.textContent = `保存済み${savedSpots.length}件でルートを作る`;
+    }
+  }
+  // ホームの保存済みカードを更新
+  renderHomeSaved();
+}
+
+function renderHomeSaved() {
+  const row = document.getElementById('home-bm-row');
+  if (!row || !allSpots.length) return;
+  const spots = savedSpots.map(id => allSpots.find(s => s.id === id)).filter(Boolean).slice(0, 4);
+  if (!spots.length) {
+    row.innerHTML = `
+      <div class="bm-card" onclick="showTab('explore')" style="cursor:pointer;">
+        <div class="bm-add"><svg viewBox="0 0 20 20" fill="none" stroke-width="1.5"><path d="M10 4v12M4 10h12"/></svg></div>
+        <div class="bm-info"><div class="bm-name" style="color:rgba(26,26,24,0.28)">スポットを保存</div><div class="bm-area">探すへ →</div></div>
+      </div>`;
+    return;
+  }
+  row.innerHTML = spots.map(s => `
+    <div class="bm-card" onclick="openDetail(${s.id})" style="cursor:pointer;">
+      <div class="bm-photo">
+        <div class="bm-photo-bg" style="background:${grad(s.category)}"></div>
+        ${s.cover_url ? `<img src="${s.cover_url.replace('w=800&h=1000','w=240&h=160')}" alt="" onerror="this.style.display='none'">` : ''}
+        <div class="bm-dim"></div>
+      </div>
+      <div class="bm-info">
+        <div class="bm-name">${s.name.length > 10 ? s.name.slice(0,10)+'…' : s.name}</div>
+        <div class="bm-area">${s.area}</div>
+      </div>
+    </div>`).join('') + (spots.length < 4 ? `
+    <div class="bm-card" onclick="showTab('explore')" style="cursor:pointer;">
+      <div class="bm-add"><svg viewBox="0 0 20 20" fill="none" stroke-width="1.5"><path d="M10 4v12M4 10h12"/></svg></div>
+      <div class="bm-info"><div class="bm-name" style="color:rgba(26,26,24,0.28)">追加する</div><div class="bm-area">—</div></div>
+    </div>` : '');
 }
 
 document.getElementById('d-save-btn').addEventListener('click', function() {
@@ -920,6 +1004,8 @@ async function init() {
     allSpots = data;
     buildHomeHScroll(data);
     renderGrid();
+    renderHomeSaved();
+    updateRouteBanner();
   } catch(e) {
     console.error(e);
     document.getElementById('spot-grid').innerHTML = '<div class="empty"><div class="empty-t">Error</div><div class="empty-s">Supabase にデータを投入してください</div></div>';
