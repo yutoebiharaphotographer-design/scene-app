@@ -585,7 +585,114 @@ const SB_URL = 'https://vuxsvwymtjamjgvdyxuz.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1eHN2d3ltdGphbWpndmR5eHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MTMyMDcsImV4cCI6MjA4ODk4OTIwN30.QSZhQtWTp-JzUhJFweufYh71gqLOVLR1KwhmqHTN488';
 const db = supabase.createClient(SB_URL, SB_KEY);
 
-let allSpots = [], exploreCat = 'all', exploreQ = '';
+let allSpots = [], allEvents = [], exploreCat = 'all', exploreQ = '';
+
+// カテゴリ文字列マッピング
+const catMap = {
+  'カフェ・コーヒー': 'café',
+  'カフェ': 'café',
+  '自然・公園・庭園': 'nature',
+  '自然・公園': 'nature',
+  'アート・美術館': 'art',
+  'アート': 'art',
+  '建築・街並み': 'architecture',
+  'マーケット・商店街': 'market',
+  'マーケット': 'market',
+  '神社・歴史': 'architecture',
+  '夜景・展望台': 'architecture',
+  '横丁・グルメ': 'market',
+};
+
+function buildRecommendFeed() {
+  // 好み・履歴からスコアリング
+  const moods = JSON.parse(localStorage.getItem('scene_mood') || '[]');
+  const prefCats = JSON.parse(localStorage.getItem('scene_categories') || '[]');
+  const prefAreas = JSON.parse(localStorage.getItem('scene_areas') || '[]');
+  const saved = JSON.parse(localStorage.getItem('scene_saved') || '[]');
+
+  // カテゴリスコアマップ
+  const catScore = {};
+  prefCats.forEach(c => {
+    const mapped = catMap[c];
+    if (mapped) catScore[mapped] = (catScore[mapped] || 0) + 3;
+  });
+
+  // 気分スコア
+  const moodCatMap = {
+    'のんびりしたい': ['nature','café'],
+    '刺激が欲しい': ['art','architecture'],
+    '写真を撮りたい': ['nature','architecture','art'],
+    '美味しいものを食べたい': ['café','market'],
+    'アートに触れたい': ['art'],
+    '自然の中にいたい': ['nature'],
+    '街を散歩したい': ['architecture','market'],
+    '夜を楽しみたい': ['architecture','nature'],
+  };
+  moods.forEach(m => {
+    (moodCatMap[m] || []).forEach(c => { catScore[c] = (catScore[c] || 0) + 2; });
+  });
+
+  // エリアスコア
+  const areaKeywords = prefAreas.flatMap(a => a.split('・'));
+
+  // スポットスコアリング
+  const scored = allSpots
+    .filter(s => !saved.includes(s.id)) // 保存済みは除外
+    .map(s => {
+      let score = 0;
+      score += (catScore[s.category] || 0);
+      if (areaKeywords.some(k => s.area.includes(k))) score += 3;
+      if (s.cover_url) score += 1; // 写真ありを優先
+      score += Math.random() * 0.5; // 少しランダム性
+      return { ...s, _score: score };
+    })
+    .sort((a, b) => b._score - a._score);
+
+  // ヒーロー：イベントがあれば優先、なければスコア1位
+  if (allEvents.length > 0) {
+    const ev = allEvents[0];
+    const heroSpot = ev.spot_id ? allSpots.find(s => s.id === ev.spot_id) : null;
+    setHeroEvent(ev, heroSpot);
+  } else if (scored.length > 0) {
+    setHeroSpot(scored[0]);
+  }
+
+  // 横スクロール：スコア上位5件（ヒーローを除く）
+  const heroId = allEvents.length > 0 && allEvents[0].spot_id ? allEvents[0].spot_id : (scored[0]?.id);
+  const hscrollSpots = scored.filter(s => s.id !== heroId).slice(0, 8);
+  buildHomeHScroll(hscrollSpots);
+}
+
+function setHeroEvent(ev, spot) {
+  const hero = document.getElementById('home-hero');
+  const img = hero.querySelector('img');
+  if (ev.cover_url) { img.src = ev.cover_url; img.style.display = 'block'; }
+  document.getElementById('home-hero-cat').textContent = `🎪 期間限定イベント · ${ev.area || ''}`;
+  document.getElementById('home-hero-name').textContent = ev.title;
+  document.getElementById('home-hero-area').textContent = ev.description?.slice(0, 40) + '…';
+  const badge = hero.querySelector('.hero-badge');
+  if (badge) {
+    const end = new Date(ev.end_date);
+    const diff = Math.ceil((end - new Date()) / (1000*60*60*24));
+    badge.textContent = `📅 残り${diff}日`;
+  }
+  hero.onclick = () => {
+    if (spot) openDetail(spot.id);
+  };
+}
+
+function setHeroSpot(spot) {
+  const hero = document.getElementById('home-hero');
+  const img = hero.querySelector('img');
+  if (spot.cover_url) { img.src = spot.cover_url; img.style.display = 'block'; }
+  else { img.style.display = 'none'; }
+  document.getElementById('home-hero-cat').textContent = \`\${lbl(spot.category)} · \${spot.area}\`;
+  document.getElementById('home-hero-name').textContent = spot.name;
+  document.getElementById('home-hero-area').textContent = spot.address || '';
+  const badge = hero.querySelector('.hero-badge');
+  if (badge) badge.textContent = \`🌅 \${spot.best_time?.split('–')[0] || ''} がおすすめ\`;
+  hero.onclick = () => openDetail(spot.id);
+}
 
 const catGrad = {
   'café':         'radial-gradient(ellipse at 35% 40%,rgba(180,150,90,0.2) 0%,transparent 55%),linear-gradient(145deg,#3d3830,#282418,#1e1c16)',
@@ -605,6 +712,7 @@ function showScreen(id) {
 }
 
 function showHome() {
+  localStorage.setItem('scene_onb_done', '1');
   showScreen('home');
   document.getElementById('bottom-nav').style.display = 'flex';
   setActiveTab('home');
@@ -631,14 +739,40 @@ function setActiveTab(tab) {
 // ── ONBOARDING ──
 let onbStep = 0;
 const onbSteps = [
-  { lbl:'Step 01 / 03', q:'どんな場所が<br>好きですか？', chips:['カフェ','自然・公園','アート','建築・街並み','マーケット'] },
-  { lbl:'Step 02 / 03', q:'どんな体験が<br>したいですか？', chips:['朝活','夜景','散歩','撮影メイン','デート','一人時間'] },
-  { lbl:'Step 03 / 03', q:'よく行くエリアは？', chips:['渋谷・代々木','下北沢・三軒茶屋','六本木・麻布','浅草・上野','吉祥寺','その他'] },
+  {
+    lbl:'Step 01 / 03',
+    q:'今週末、どんな気分<br>ですか？',
+    chips:['のんびりしたい','刺激が欲しい','写真を撮りたい','美味しいものを食べたい','アートに触れたい','自然の中にいたい','街を散歩したい','夜を楽しみたい']
+  },
+  {
+    lbl:'Step 02 / 03',
+    q:'好きな場所の<br>タイプは？',
+    chips:['カフェ・コーヒー','自然・公園・庭園','アート・美術館','建築・街並み','マーケット・商店街','神社・歴史','夜景・展望台','横丁・グルメ']
+  },
+  {
+    lbl:'Step 03 / 03',
+    q:'よく行くエリアは？',
+    chips:['渋谷・代々木・原宿','下北沢・三軒茶屋・世田谷','六本木・麻布・赤坂','恵比寿・代官山・中目黒','銀座・丸の内・日本橋','浅草・上野・谷中・蔵前','清澄白河・門前仲町','新宿・神楽坂・早稲田','吉祥寺・三鷹・国分寺','お台場・豊洲・有明','池袋・高田馬場','品川・天王洲・大崎']
+  },
 ];
 
+function getSelectedChips() {
+  return [...document.querySelectorAll('.onb-chip.sel')].map(el => el.textContent);
+}
+
 function nextOnbStep() {
+  // 現在のステップの選択を保存
+  const selected = getSelectedChips();
+  if (onbStep === 0) localStorage.setItem('scene_mood', JSON.stringify(selected));
+  if (onbStep === 1) localStorage.setItem('scene_categories', JSON.stringify(selected));
+  if (onbStep === 2) localStorage.setItem('scene_areas', JSON.stringify(selected));
+
   onbStep++;
-  if (onbStep >= onbSteps.length) { showHome(); return; }
+  if (onbStep >= onbSteps.length) {
+    localStorage.setItem('scene_onb_done', '1');
+    showHome();
+    return;
+  }
   const s = onbSteps[onbStep];
   document.getElementById('onb-step').textContent = s.lbl;
   document.getElementById('onb-q').innerHTML = s.q;
@@ -754,7 +888,7 @@ document.getElementById('detail-overlay').addEventListener('click', e => {
 });
 
 // ── HOME HERO tap ──
-document.getElementById('home-hero').onclick = () => openDetail(6);
+// hero onclick is set dynamically by buildRecommendFeed()
 
 // ── ROUTE ──
 let routeSpots = [];
@@ -778,7 +912,10 @@ function renderRoute() {
   // 2件以上でないと所要時間は出さない
   document.getElementById('route-time').textContent = sorted.length >= 2 ? `約${Math.round((sorted.length - 1) * 20)}分` : '—';
   document.getElementById('route-maps-btn').onclick = () => {
-    const wps = sorted.map(s => encodeURIComponent(s.address || s.name)).join('/');
+    const wps = sorted.map(s => {
+      if (s.lat && s.lng) return `${s.lat},${s.lng}`;
+      return encodeURIComponent(s.name + ' ' + (s.address || s.area + ' 東京'));
+    }).join('/');
     window.open(`https://www.google.com/maps/dir/${wps}`, '_blank');
   };
   const list = document.getElementById('route-list');
