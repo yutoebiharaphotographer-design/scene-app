@@ -252,6 +252,286 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 </div>
 
 <!-- ONBOARDING -->
+<div class="screen" id="screen-tutorial">
+  <div style="position:relative;width:100%;height:100vh;background:var(--black);display:flex;flex-direction:column;overflow:hidden;">
+
+    <div id="tut-slides" style="flex:1;position:relative;overflow:hidden;">
+
+      <!-- ========== Slide 1: コンセプト ========== -->
+      <div class="tut-slide active" data-idx="0" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:48px 24px 0;opacity:1;transition:opacity 0.4s ease;overflow-y:auto;">
+        <div style="font-size:10px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Find Your Scene.</div>
+        <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:var(--cream);text-align:center;line-height:1.3;margin-bottom:10px;">「探す」より<br>「出会う」体験を。</div>
+        <div style="font-size:12px;color:rgba(245,242,237,0.5);text-align:center;line-height:1.8;margin-bottom:28px;">SNSでは雑然とした情報の海。<br>SCENEはフォトスポットだけに特化した<br>あなたのための週末メディア。</div>
+        <!-- スマホフレーム -->
+        <div style="width:200px;height:340px;border:2px solid rgba(255,255,255,0.15);border-radius:28px;overflow:hidden;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.7);flex-shrink:0;">
+          <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:6px;background:rgba(255,255,255,0.15);border-radius:0 0 4px 4px;z-index:2;"></div>
+          <div style="width:100%;height:100%;background:#1a1a14;overflow:hidden;">
+            <!-- ヒーローカード -->
+            <div style="height:160px;background:linear-gradient(160deg,#3a3020,#1a1814);position:relative;overflow:hidden;">
+              <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=320&fit=crop" style="width:100%;height:100%;object-fit:cover;opacity:0.7;" onerror="this.style.display='none'">
+              <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(0,0,0,0.6));"></div>
+              <div style="position:absolute;bottom:10px;left:12px;">
+                <div style="font-size:7px;color:var(--gold);letter-spacing:0.15em;">カフェ · 代々木公園</div>
+                <div style="font-size:14px;color:var(--cream);font-family:var(--serif-en);">Fuglen Tokyo</div>
+              </div>
+            </div>
+            <!-- カードリスト -->
+            <div style="padding:8px;display:flex;gap:6px;">
+              <div style="flex:0 0 60px;height:72px;border-radius:8px;overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=200&h=200&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#2a2820'">
+                <div style="position:absolute;bottom:4px;left:4px;font-size:7px;color:var(--cream);">自然</div>
+              </div>
+              <div style="flex:0 0 60px;height:72px;border-radius:8px;overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1541367777708-7905fe3296c0?w=200&h=200&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#222018'">
+                <div style="position:absolute;bottom:4px;left:4px;font-size:7px;color:var(--cream);">アート</div>
+              </div>
+              <div style="flex:0 0 60px;height:72px;border-radius:8px;overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=200&h=200&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#1e1c18'">
+                <div style="position:absolute;bottom:4px;left:4px;font-size:7px;color:var(--cream);">建築</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Slide 2: レコメンド ========== -->
+      <div class="tut-slide" data-idx="1" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:48px 24px 0;opacity:0;transition:opacity 0.4s ease;overflow-y:auto;">
+        <div style="font-size:10px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Discover</div>
+        <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:var(--cream);text-align:center;line-height:1.3;margin-bottom:10px;">あなただけの<br>レコメンドを。</div>
+        <div style="font-size:12px;color:rgba(245,242,237,0.5);text-align:center;line-height:1.8;margin-bottom:28px;">最初に好みを登録するだけで<br>あなた専用のスポットをレコメンド。<br>設定は後からいつでも変更できます。</div>
+        <!-- スマホフレーム -->
+        <div style="width:200px;height:340px;border:2px solid rgba(255,255,255,0.15);border-radius:28px;overflow:hidden;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.7);flex-shrink:0;">
+          <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:6px;background:rgba(255,255,255,0.15);border-radius:0 0 4px 4px;z-index:2;"></div>
+          <div style="width:100%;height:100%;background:#1a1a14;padding:20px 14px;">
+            <div style="font-size:7px;letter-spacing:0.2em;color:rgba(245,242,237,0.4);margin-bottom:4px;">Step 01 / 03</div>
+            <div style="font-size:13px;color:var(--cream);font-family:var(--serif-en);margin-bottom:14px;line-height:1.3;">今週末、どんな<br>気分ですか？</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <div style="padding:4px 8px;border:0.5px solid var(--gold);border-radius:20px;font-size:8px;color:var(--gold);background:rgba(201,169,110,0.15);">📷 写真を撮りたい</div>
+              <div style="padding:4px 8px;border:0.5px solid rgba(245,242,237,0.2);border-radius:20px;font-size:8px;color:rgba(245,242,237,0.5);">のんびりしたい</div>
+              <div style="padding:4px 8px;border:0.5px solid rgba(245,242,237,0.2);border-radius:20px;font-size:8px;color:rgba(245,242,237,0.5);">街を散歩したい</div>
+              <div style="padding:4px 8px;border:0.5px solid rgba(245,242,237,0.2);border-radius:20px;font-size:8px;color:rgba(245,242,237,0.5);">自然の中にいたい</div>
+              <div style="padding:4px 8px;border:0.5px solid rgba(245,242,237,0.2);border-radius:20px;font-size:8px;color:rgba(245,242,237,0.5);">夜を楽しみたい</div>
+            </div>
+            <div style="margin-top:16px;padding:8px;background:var(--gold);border-radius:8px;text-align:center;font-size:8px;color:var(--black);letter-spacing:0.1em;">次へ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Slide 3: 探す ========== -->
+      <div class="tut-slide" data-idx="2" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:48px 24px 0;opacity:0;transition:opacity 0.4s ease;overflow-y:auto;">
+        <div style="font-size:10px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Explore</div>
+        <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:var(--cream);text-align:center;line-height:1.3;margin-bottom:10px;">撮影情報まで<br>まるごとわかる。</div>
+        <div style="font-size:12px;color:rgba(245,242,237,0.5);text-align:center;line-height:1.8;margin-bottom:28px;">施設情報・撮影ヒント・<br>おすすめ時間帯など<br>フォトスポットに特化した情報を掲載。</div>
+        <!-- スマホフレーム（実際のスポット詳細UIを再現） -->
+        <div style="width:200px;height:360px;border:2px solid rgba(255,255,255,0.15);border-radius:28px;overflow:hidden;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.7);flex-shrink:0;">
+          <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:6px;background:rgba(255,255,255,0.15);border-radius:0 0 4px 4px;z-index:2;"></div>
+          <div style="width:100%;height:100%;overflow-y:auto;background:#f5f2ed;">
+            <!-- ヒーロー写真 -->
+            <div style="height:130px;position:relative;overflow:hidden;flex-shrink:0;">
+              <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=260&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#2a2820'">
+              <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 30%,rgba(0,0,0,0.72) 100%);"></div>
+              <!-- 閉じるボタン -->
+              <div style="position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">
+                <svg width="8" height="8" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.5"><path d="M2 2l10 10M12 2L2 12"/></svg>
+              </div>
+              <div style="position:absolute;bottom:8px;left:10px;">
+                <div style="font-size:6px;color:#c9a96e;letter-spacing:0.2em;">カフェ · 清澄白河</div>
+                <div style="font-size:13px;color:white;font-family:Georgia,serif;font-weight:300;">Blue Bottle Coffee</div>
+                <div style="font-size:7px;color:rgba(255,255,255,0.6);margin-top:2px;">清澄白河 · 徒歩7分</div>
+              </div>
+            </div>
+            <!-- ボディ -->
+            <div style="background:#f5f2ed;padding:0 10px 12px;">
+              <!-- タグ -->
+              <div style="display:flex;gap:4px;flex-wrap:wrap;padding:8px 0 6px;">
+                <div style="font-size:7px;padding:3px 7px;border-radius:20px;border:0.5px solid #c9a96e;color:#c9a96e;">倉庫</div>
+                <div style="font-size:7px;padding:3px 7px;border-radius:20px;border:0.5px solid #c9a96e;color:#c9a96e;">清澄白河</div>
+                <div style="font-size:7px;padding:3px 7px;border-radius:20px;border:0.5px solid #c9a96e;color:#c9a96e;">コーヒー</div>
+              </div>
+              <!-- About This Spot -->
+              <div style="padding-top:8px;">
+                <div style="font-size:7px;letter-spacing:0.3em;color:#c9a96e;text-transform:uppercase;margin-bottom:5px;">About This Spot</div>
+                <div style="font-size:8px;line-height:1.8;color:#1a1a18;">倉庫をリノベした日本1号店。焙煎の様子を間近に見ながら楽しめる。</div>
+                <!-- 撮影ヒント -->
+                <div style="margin-top:8px;padding:7px 8px;background:rgba(201,169,110,0.08);border-left:2px solid #c9a96e;border-radius:0 5px 5px 0;">
+                  <div style="font-size:6px;letter-spacing:0.2em;color:#c9a96e;margin-bottom:3px;">撮影ヒント</div>
+                  <div style="font-size:7px;line-height:1.7;color:rgba(26,26,24,0.65);">倉庫の外観を正面から。行列も写真の一部になる。</div>
+                </div>
+                <div style="font-size:6px;color:rgba(26,26,24,0.28);margin-top:4px;letter-spacing:0.15em;">● AI GENERATED</div>
+              </div>
+              <!-- アクセス -->
+              <div style="height:0.5px;background:rgba(26,26,24,0.1);margin:8px 0;"></div>
+              <div style="font-size:7px;letter-spacing:0.3em;color:#c9a96e;text-transform:uppercase;margin-bottom:6px;">Access &amp; Hours</div>
+              <div style="display:flex;gap:6px;align-items:flex-start;padding:4px 0;border-bottom:0.5px solid rgba(26,26,24,0.07);">
+                <div style="width:18px;height:18px;border-radius:5px;background:rgba(201,169,110,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="#c9a96e" stroke-width="1.4"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z"/><circle cx="8" cy="6" r="1.5"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:6px;color:rgba(26,26,24,0.4);letter-spacing:0.15em;">場所</div>
+                  <div style="font-size:7px;color:#1a1a18;">東京都江東区平野1-4-8</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:6px;align-items:flex-start;padding:4px 0;">
+                <div style="width:18px;height:18px;border-radius:5px;background:rgba(201,169,110,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="#c9a96e" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:6px;color:rgba(26,26,24,0.4);letter-spacing:0.15em;">営業時間</div>
+                  <div style="font-size:7px;color:#1a1a18;">08:00–19:00 <span style="font-size:6px;color:#3B6D11;background:#EAF3DE;padding:1px 5px;border-radius:10px;">Open</span></div>
+                </div>
+              </div>
+              <!-- BEST TIME バー -->
+              <div style="margin-top:8px;background:#1a1a18;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;">
+                <div style="font-size:16px;">🌅</div>
+                <div>
+                  <div style="font-size:6px;letter-spacing:0.2em;color:#c9a96e;">BEST TIME TO SHOOT</div>
+                  <div style="font-size:9px;color:#c9a96e;font-family:Georgia,serif;">08:00–10:00</div>
+                </div>
+              </div>
+              <!-- Mapsボタン -->
+              <div style="margin-top:8px;padding:7px;border:0.5px solid rgba(26,26,24,0.2);border-radius:8px;text-align:center;font-size:7px;color:rgba(26,26,24,0.6);letter-spacing:0.2em;">🗺 GOOGLE MAPS で開く</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Slide 4: 保存 ========== -->
+      <div class="tut-slide" data-idx="3" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:48px 24px 0;opacity:0;transition:opacity 0.4s ease;overflow-y:auto;">
+        <div style="font-size:10px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Save</div>
+        <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:var(--cream);text-align:center;line-height:1.3;margin-bottom:10px;">気になる場所を<br>まとめて保存。</div>
+        <div style="font-size:12px;color:rgba(245,242,237,0.5);text-align:center;line-height:1.8;margin-bottom:28px;">ブックマークして後から見返したり<br>ルート作成にまとめて活用。<br>週末の計画がぐっとスムーズに。</div>
+        <!-- スマホフレーム -->
+        <div style="width:200px;height:340px;border:2px solid rgba(255,255,255,0.15);border-radius:28px;overflow:hidden;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.7);flex-shrink:0;">
+          <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:6px;background:rgba(255,255,255,0.15);border-radius:0 0 4px 4px;z-index:2;"></div>
+          <div style="width:100%;height:100%;background:#1a1a14;padding:14px;">
+            <div style="font-size:9px;color:var(--cream);letter-spacing:0.15em;margin-bottom:12px;">保存済み <span style="color:var(--gold);">4</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div style="height:80px;border-radius:8px;overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&h=200&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#2a2820'">
+                <div style="position:absolute;bottom:4px;left:5px;font-size:7px;color:var(--cream);">Fuglen</div>
+              </div>
+              <div style="height:80px;border-radius:8px;overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=200&h=200&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#2a2820'">
+                <div style="position:absolute;bottom:4px;left:5px;font-size:7px;color:var(--cream);">清澄庭園</div>
+              </div>
+              <div style="height:80px;border-radius:8px;overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1541367777708-7905fe3296c0?w=200&h=200&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#222018'">
+                <div style="position:absolute;bottom:4px;left:5px;font-size:7px;color:var(--cream);">森美術館</div>
+              </div>
+              <div style="height:80px;border-radius:8px;overflow:hidden;position:relative;">
+                <img src="https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=200&h=200&fit=crop" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.background='#1e1c18'">
+                <div style="position:absolute;bottom:4px;left:5px;font-size:7px;color:var(--cream);">谷中銀座</div>
+              </div>
+            </div>
+            <div style="margin-top:8px;padding:6px;border:0.5px solid var(--gold);border-radius:8px;text-align:center;font-size:8px;color:var(--gold);">ルートを作る →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Slide 5: ルート ========== -->
+      <div class="tut-slide" data-idx="4" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;padding:48px 24px 0;opacity:0;transition:opacity 0.4s ease;overflow-y:auto;">
+        <div style="font-size:10px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Route</div>
+        <div style="font-family:var(--serif-en);font-size:28px;font-weight:300;color:var(--cream);text-align:center;line-height:1.3;margin-bottom:10px;">ワンタップで<br>ルートを開く。</div>
+        <div style="font-size:12px;color:rgba(245,242,237,0.5);text-align:center;line-height:1.8;margin-bottom:20px;">保存したスポットを自動整理して<br>効率的な順番でルート生成。<br>Google Mapsと連携してナビも。</div>
+        <!-- スマホフレームとアニメーション -->
+        <div style="position:relative;width:200px;height:340px;flex-shrink:0;">
+          <!-- SCENEのルート画面 -->
+          <div id="tut-route-scene" style="position:absolute;inset:0;border:2px solid rgba(255,255,255,0.15);border-radius:28px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.7);transition:transform 0.5s ease,opacity 0.5s ease;">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:6px;background:rgba(255,255,255,0.15);border-radius:0 0 4px 4px;z-index:2;"></div>
+            <div style="width:100%;height:100%;background:#1a1a14;padding:16px;">
+              <div style="font-size:9px;color:var(--gold);letter-spacing:0.15em;margin-bottom:14px;">MY ROUTE · 3スポット</div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:18px;height:18px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--black);flex-shrink:0;font-weight:600;">A</div>
+                  <div>
+                    <div style="font-size:9px;color:var(--cream);">Blue Bottle Coffee</div>
+                    <div style="font-size:7px;color:rgba(245,242,237,0.4);">清澄白河</div>
+                  </div>
+                </div>
+                <div style="width:1px;height:10px;background:rgba(201,169,110,0.3);margin-left:8px;"></div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:18px;height:18px;border-radius:50%;background:rgba(201,169,110,0.25);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--gold);flex-shrink:0;">B</div>
+                  <div>
+                    <div style="font-size:9px;color:rgba(245,242,237,0.8);">清澄庭園</div>
+                    <div style="font-size:7px;color:rgba(245,242,237,0.4);">清澄白河</div>
+                  </div>
+                </div>
+                <div style="width:1px;height:10px;background:rgba(201,169,110,0.3);margin-left:8px;"></div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:18px;height:18px;border-radius:50%;background:rgba(201,169,110,0.25);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--gold);flex-shrink:0;">C</div>
+                  <div>
+                    <div style="font-size:9px;color:rgba(245,242,237,0.8);">深川江戸資料館</div>
+                    <div style="font-size:7px;color:rgba(245,242,237,0.4);">清澄白河</div>
+                  </div>
+                </div>
+              </div>
+              <div id="tut-maps-btn" style="padding:8px;background:var(--gold);border-radius:8px;text-align:center;font-size:8px;color:var(--black);letter-spacing:0.1em;cursor:pointer;">Google Mapsで開く →</div>
+            </div>
+          </div>
+          <!-- Google Maps風モック（アニメーション後に表示） -->
+          <div id="tut-route-maps" style="position:absolute;inset:0;border:2px solid rgba(255,255,255,0.15);border-radius:28px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.7);opacity:0;transform:scale(0.92);transition:transform 0.5s ease,opacity 0.5s ease;pointer-events:none;">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:6px;background:rgba(255,255,255,0.15);border-radius:0 0 4px 4px;z-index:2;"></div>
+            <div style="width:100%;height:100%;background:#e8e0d8;position:relative;overflow:hidden;">
+              <!-- 地図背景 -->
+              <div style="position:absolute;inset:0;">
+                <div style="position:absolute;top:30%;left:10%;width:80%;height:2px;background:rgba(255,255,255,0.9);border-radius:1px;"></div>
+                <div style="position:absolute;top:50%;left:20%;width:60%;height:2px;background:rgba(255,255,255,0.7);border-radius:1px;"></div>
+                <div style="position:absolute;top:20%;left:40%;width:2px;height:60%;background:rgba(255,255,255,0.8);border-radius:1px;"></div>
+                <div style="position:absolute;top:15%;left:15%;width:30%;height:20%;background:rgba(200,190,170,0.5);border-radius:4px;"></div>
+                <div style="position:absolute;top:55%;left:50%;width:35%;height:25%;background:rgba(200,190,170,0.5);border-radius:4px;"></div>
+                <!-- ルートライン -->
+                <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 200 340">
+                  <path d="M80 100 Q100 150 90 200 Q85 250 110 280" stroke="#4285F4" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>
+                <!-- ピン A -->
+                <div style="position:absolute;top:25%;left:35%;transform:translate(-50%,-100%);">
+                  <div style="background:#4285F4;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.3);">A</div>
+                </div>
+                <!-- ピン B -->
+                <div style="position:absolute;top:55%;left:42%;transform:translate(-50%,-100%);">
+                  <div style="background:#4285F4;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.3);">B</div>
+                </div>
+                <!-- ピン C -->
+                <div style="position:absolute;top:76%;left:55%;transform:translate(-50%,-100%);">
+                  <div style="background:#4285F4;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,0.3);">C</div>
+                </div>
+              </div>
+              <!-- 下部パネル -->
+              <div style="position:absolute;bottom:0;left:0;right:0;background:white;padding:10px 12px;border-radius:12px 12px 0 0;">
+                <div style="font-size:9px;color:#333;font-weight:600;margin-bottom:2px;">Blue Bottle → 清澄庭園 → 深川</div>
+                <div style="font-size:8px;color:#666;">徒歩 約25分</div>
+                <!-- Google帰属表示 -->
+                <div style="font-size:6px;color:#999;margin-top:6px;">Map data ©2026 Google</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- インジケーター -->
+    <div style="display:flex;gap:6px;justify-content:center;padding:12px 0 6px;">
+      <div class="tut-dot active" data-idx="0" style="width:16px;height:2px;background:var(--gold);border-radius:1px;transition:all 0.3s;"></div>
+      <div class="tut-dot" data-idx="1" style="width:6px;height:2px;background:rgba(245,242,237,0.2);border-radius:1px;transition:all 0.3s;"></div>
+      <div class="tut-dot" data-idx="2" style="width:6px;height:2px;background:rgba(245,242,237,0.2);border-radius:1px;transition:all 0.3s;"></div>
+      <div class="tut-dot" data-idx="3" style="width:6px;height:2px;background:rgba(245,242,237,0.2);border-radius:1px;transition:all 0.3s;"></div>
+      <div class="tut-dot" data-idx="4" style="width:6px;height:2px;background:rgba(245,242,237,0.2);border-radius:1px;transition:all 0.3s;"></div>
+    </div>
+
+    <!-- ボタン -->
+    <div style="padding:12px 32px 40px;display:flex;gap:12px;align-items:center;">
+      <button id="tut-prev-btn" onclick="tutPrev()" style="width:44px;height:44px;background:rgba(255,255,255,0.05);border:0.5px solid rgba(245,242,237,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 0.3s;flex-shrink:0;">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--cream)" stroke-width="1.4"><path d="M10 12L6 8l4-4"/></svg>
+      </button>
+      <button id="tut-next-btn" onclick="tutNext()" style="flex:1;padding:14px;background:var(--gold);color:var(--black);border:none;border-radius:12px;font-family:var(--sans);font-size:12px;letter-spacing:0.25em;text-transform:uppercase;cursor:pointer;">次へ</button>
+      <button onclick="tutSkip()" style="width:44px;height:44px;background:none;border:none;color:rgba(245,242,237,0.3);font-family:var(--sans);font-size:8px;letter-spacing:0.08em;cursor:pointer;flex-shrink:0;line-height:1.3;">スキップ</button>
+    </div>
+  </div>
+</div>
+
+
+
 <div class="screen" id="screen-onb">
   <div class="onb-logo">SCENE</div>
   <div class="onb-tagline">Find Your Scene</div>
@@ -365,13 +645,13 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
       <input id="search-q" type="text" placeholder="スポット・エリア・タグで探す">
     </div>
     <div class="filter-bar">
-      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn active" data-cat="all">すべて</button>
       <button class="filter-btn" data-cat="event" id="filter-event" style="border-color:var(--gold);color:var(--gold);">🎪 期間限定</button>
-      <button class="filter-btn" data-cat="café">Café</button>
-      <button class="filter-btn" data-cat="nature">Nature</button>
-      <button class="filter-btn" data-cat="art">Art</button>
+      <button class="filter-btn" data-cat="café">カフェ</button>
+      <button class="filter-btn" data-cat="nature">自然</button>
+      <button class="filter-btn" data-cat="art">アート</button>
       <button class="filter-btn" data-cat="architecture">建築</button>
-      <button class="filter-btn" data-cat="market">Market</button>
+      <button class="filter-btn" data-cat="market">マーケット</button>
     </div>
   </div>
   <div class="count-bar" id="count-bar">読み込み中...</div>
@@ -490,10 +770,10 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
     <div class="d-body">
       <div class="d-tags" id="d-tags"></div>
       <div class="d-sec">
-        <div class="d-sec-lbl">About This Spot</div>
+        <div class="d-sec-lbl">施設情報</div>
         <div class="d-ai" id="d-ai"></div>
         <div class="hint-box"><div class="hint-lbl">撮影ヒント</div><div class="hint-txt" id="d-hint"></div></div>
-        <div class="ai-badge"><div class="ai-dot"></div>AI generated</div>
+        <div class="ai-badge"><div class="ai-dot"></div>AI による自動生成</div>
       </div>
       <div class="divider"></div>
       <div class="d-sec">
@@ -716,7 +996,7 @@ const catGrad = {
   'architecture': 'radial-gradient(ellipse at 40% 50%,rgba(160,150,140,0.15) 0%,transparent 55%),linear-gradient(145deg,#302e2c,#242220,#1c1c1a)',
   'market':       'radial-gradient(ellipse at 40% 60%,rgba(200,100,60,0.12) 0%,transparent 50%),linear-gradient(145deg,#362824,#28201c,#1e1816)',
 };
-const catLbl = {'café':'Café','nature':'Nature','art':'Art','architecture':'Architecture','market':'Market'};
+const catLbl = {'café':'カフェ','nature':'自然','art':'アート','architecture':'建築','market':'マーケット'};
 const grad = c => catGrad[c] || catGrad['architecture'];
 
 const fallbackImgs = {
@@ -887,6 +1167,7 @@ function renderGrid() {
       <div class="card-photo">
         <div class="card-bg" style="background:${grad(s.category)}"></div>
         <img class="card-img" src="${s.cover_url || fallbackImg(s.category)}" alt="" loading="lazy" onerror="this.src=fallbackImg(s.category)">
+        ${!s.cover_url ? `<div style="position:absolute;inset:0;background:rgba(26,26,24,0.55);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none;"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="var(--gold)" stroke-width="1.2" opacity="0.7"><rect x="2" y="4" width="16" height="12" rx="2"/><circle cx="7" cy="9" r="1.5"/><path d="M2 14l4-4 3 3 3-3 4 4"/></svg><span style="font-size:12px;letter-spacing:0.3em;color:var(--gold);font-family:var(--serif-en);text-transform:uppercase;">No Image</span></div>` : ''}
         <div class="card-grad"></div>
         <div class="card-body">
           <div class="card-cat">${lbl(s.category)}</div>
@@ -1218,6 +1499,64 @@ document.getElementById('saved-to-route-btn').addEventListener('click', function
 });
 
 // ── LOAD ──
+let tutIdx = 0;
+const tutTotal = 5;
+let routeAnimTimer = null;
+
+function tutGoTo(idx) {
+  document.querySelectorAll('.tut-slide')[tutIdx].style.opacity = '0';
+  document.querySelectorAll('.tut-dot')[tutIdx].style.width = '6px';
+  document.querySelectorAll('.tut-dot')[tutIdx].style.background = 'rgba(245,242,237,0.2)';
+  tutIdx = idx;
+  document.querySelectorAll('.tut-slide')[tutIdx].style.opacity = '1';
+  document.querySelectorAll('.tut-dot')[tutIdx].style.width = '16px';
+  document.querySelectorAll('.tut-dot')[tutIdx].style.background = 'var(--gold)';
+  const prev = document.getElementById('tut-prev-btn');
+  if (prev) prev.style.opacity = tutIdx > 0 ? '1' : '0';
+  const nxt = document.getElementById('tut-next-btn');
+  if (nxt) nxt.textContent = tutIdx === tutTotal - 1 ? 'はじめる' : '次へ';
+
+  // ルートスライド（idx=4）でアニメーション自動起動
+  if (idx === 4) {
+    clearTimeout(routeAnimTimer);
+    // Maps画面をリセット
+    const maps = document.getElementById('tut-route-maps');
+    const scene = document.getElementById('tut-route-scene');
+    if (maps) { maps.style.opacity = '0'; maps.style.transform = 'scale(0.92)'; maps.style.pointerEvents = 'none'; }
+    if (scene) { scene.style.opacity = '1'; scene.style.transform = 'scale(1)'; }
+    // 2秒後にSCENE→Maps切り替えアニメーション
+    routeAnimTimer = setTimeout(() => {
+      if (scene) { scene.style.opacity = '0'; scene.style.transform = 'scale(1.04)'; }
+      setTimeout(() => {
+        if (maps) { maps.style.opacity = '1'; maps.style.transform = 'scale(1)'; maps.style.pointerEvents = 'auto'; }
+      }, 300);
+    }, 2000);
+  } else {
+    clearTimeout(routeAnimTimer);
+  }
+}
+
+function tutNext() {
+  if (tutIdx < tutTotal - 1) {
+    tutGoTo(tutIdx + 1);
+  } else {
+    tutSkip();
+  }
+}
+
+function tutPrev() {
+  if (tutIdx > 0) tutGoTo(tutIdx - 1);
+}
+
+function tutSkip() {
+  localStorage.setItem('scene_tut_done', '1');
+  if (localStorage.getItem('scene_onb_done')) {
+    showHome();
+  } else {
+    showScreen('onb');
+  }
+}
+
 async function init() {
   try {
     // スポット取得
@@ -1245,7 +1584,9 @@ async function init() {
     document.getElementById('spot-grid').innerHTML = '<div class="empty"><div class="empty-t">Error</div><div class="empty-s">データを読み込めませんでした</div></div>';
   } finally {
     setTimeout(() => {
-      if (localStorage.getItem('scene_onb_done')) {
+      if (!localStorage.getItem('scene_tut_done')) {
+        showScreen('tutorial');
+      } else if (localStorage.getItem('scene_onb_done')) {
         showHome();
       } else {
         showScreen('onb');
