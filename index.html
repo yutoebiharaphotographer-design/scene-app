@@ -20,12 +20,13 @@
 html, body { background: var(--cream); color: var(--black); font-family: var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; height: 100%; }
 
 /* ── SCREENS ── */
-.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen { display: none; min-height: 100vh; flex-direction: column; opacity: 0; transition: opacity 0.35s ease; }
 .screen.active { display: flex; }
 
 /* ── LOADING ── */
 #screen-loading {
   background: var(--black); align-items: center; justify-content: center;
+  transition: opacity 0.5s ease;
 }
 .loading-logo { font-family: var(--serif-en); font-size: 32px; font-weight: 300; letter-spacing: 0.3em; color: var(--cream); animation: pulse 1.5s ease infinite; }
 @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
@@ -282,11 +283,11 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
   <div class="top-nav">
     <div class="nav-logo">SCENE</div>
     <div class="nav-right">
-      <div class="nav-btn" style="position:relative">
+      <div class="nav-btn" style="position:relative" onclick="showNotifToast()">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2a4 4 0 014 4c0 3 1 4 1 4H3s1-1 1-4a4 4 0 014-4zM6.5 13a1.5 1.5 0 003 0"/></svg>
         <div class="nav-notif"></div>
       </div>
-      <div class="nav-btn">
+      <div class="nav-btn" onclick="showMyPageToast()">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-5 6-5s6 1.7 6 5"/></svg>
       </div>
     </div>
@@ -318,15 +319,15 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
   <div class="cat-row">
     <div class="cat-pill active" onclick="setCat(this,'café')">
       <div class="cat-pill-img"><img src="https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?w=128&h=128&fit=crop" alt=""><div class="cat-dim"></div></div>
-      <div class="cat-label">Café</div>
+      <div class="cat-label">カフェ</div>
     </div>
     <div class="cat-pill" onclick="setCat(this,'nature')">
       <div class="cat-pill-img"><img src="https://images.pexels.com/photos/1072179/pexels-photo-1072179.jpeg?w=128&h=128&fit=crop" alt=""><div class="cat-dim"></div></div>
-      <div class="cat-label">Nature</div>
+      <div class="cat-label">自然</div>
     </div>
     <div class="cat-pill" onclick="setCat(this,'art')">
       <div class="cat-pill-img"><img src="https://images.pexels.com/photos/1839919/pexels-photo-1839919.jpeg?w=128&h=128&fit=crop" alt=""><div class="cat-dim"></div></div>
-      <div class="cat-label">Art</div>
+      <div class="cat-label">アート</div>
     </div>
     <div class="cat-pill" onclick="setCat(this,'architecture')">
       <div class="cat-pill-img"><img src="https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?w=128&h=128&fit=crop" alt=""><div class="cat-dim"></div></div>
@@ -334,7 +335,7 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
     </div>
     <div class="cat-pill" onclick="setCat(this,'market')">
       <div class="cat-pill-img"><img src="https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?w=128&h=128&fit=crop" alt=""><div class="cat-dim"></div></div>
-      <div class="cat-label">Market</div>
+      <div class="cat-label">マーケット</div>
     </div>
   </div>
 
@@ -380,9 +381,9 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 <!-- ROUTE -->
 <div class="screen" id="screen-route" style="flex-direction:column;background:var(--cream);">
   <div class="top-nav">
-    <div class="nav-logo" style="font-size:18px;letter-spacing:0.1em">Route</div>
+    <div class="nav-logo" style="font-size:18px;letter-spacing:0.1em">ルート</div>
     <div class="nav-right">
-      <div class="nav-btn" id="route-clear-btn">
+      <div class="nav-btn" id="route-clear-btn" style="opacity:0;pointer-events:none;">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 8a6 6 0 106-6"/><path d="M5 5L2 8l3 3"/></svg>
       </div>
     </div>
@@ -674,7 +675,6 @@ function buildRecommendFeed() {
 function setHeroEvent(ev, spot) {
   const hero = document.getElementById('home-hero');
   const img = document.getElementById('home-hero-img');
-  console.log('setHeroEvent cover_url:', ev.cover_url);
   if (ev.cover_url) { img.src = ev.cover_url; img.style.display = 'block'; }
   else { img.style.display = 'none'; }
 
@@ -718,12 +718,28 @@ const catGrad = {
 };
 const catLbl = {'café':'Café','nature':'Nature','art':'Art','architecture':'Architecture','market':'Market'};
 const grad = c => catGrad[c] || catGrad['architecture'];
+
+const fallbackImgs = {
+  'café':         'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=533&fit=crop',
+  'nature':       'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=400&h=533&fit=crop',
+  'art':          'https://images.unsplash.com/photo-1541367777708-7905fe3296c0?w=400&h=533&fit=crop',
+  'architecture': 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=533&fit=crop',
+  'market':       'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=400&h=533&fit=crop',
+};
+const fallbackImg = c => fallbackImgs[c] || fallbackImgs['architecture'];
 const lbl  = c => catLbl[c] || c;
 
 // ── SCREENS ──
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.opacity = '0';
+  });
+  const next = document.getElementById('screen-' + id);
+  next.classList.add('active');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => { next.style.opacity = '1'; });
+  });
 }
 
 function showHome() {
@@ -753,7 +769,8 @@ function showEventTab() {
   renderGrid();
 }
 
-function showTab(tab) {
+function showTab(tab, pushState = true) {
+  if (pushState) history.pushState({ tab }, '', '#' + tab);
   transition(() => {
     showScreen(tab);
     document.getElementById('bottom-nav').style.display = 'flex';
@@ -761,6 +778,11 @@ function showTab(tab) {
     if (tab === 'saved') renderSaved();
   }, 420);
 }
+
+window.addEventListener('popstate', (e) => {
+  const tab = e.state?.tab || 'home';
+  showTab(tab, false);
+});
 
 function setActiveTab(tab) {
   const map = { home:0, explore:1, route:2, saved:3 };
@@ -864,7 +886,7 @@ function renderGrid() {
     <div class="spot-card" onclick="openDetail(${s.id})">
       <div class="card-photo">
         <div class="card-bg" style="background:${grad(s.category)}"></div>
-        ${s.cover_url ? `<img class="card-img" src="${s.cover_url}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <img class="card-img" src="${s.cover_url || fallbackImg(s.category)}" alt="" loading="lazy" onerror="this.src=fallbackImg(s.category)">
         <div class="card-grad"></div>
         <div class="card-body">
           <div class="card-cat">${lbl(s.category)}</div>
@@ -907,8 +929,8 @@ function openDetail(id) {
   const s = allSpots.find(x => x.id === id);
   if (!s) return;
   const img = document.getElementById('d-img');
-  if (s.cover_url) { img.src = s.cover_url; img.style.display = 'block'; }
-  else { img.style.display = 'none'; }
+  img.src = s.cover_url || fallbackImg(s.category);
+  img.style.display = 'block';
   document.getElementById('d-bg').style.background = grad(s.category);
   document.getElementById('d-cat').textContent = `${lbl(s.category)} · ${s.area}`;
   document.getElementById('d-name').textContent = s.name;
@@ -961,11 +983,17 @@ function renderRoute() {
   // 2件以上でないと所要時間は出さない
   document.getElementById('route-time').textContent = sorted.length >= 2 ? `約${Math.round((sorted.length - 1) * 20)}分` : '—';
   document.getElementById('route-maps-btn').onclick = () => {
-    const wps = sorted.map(s => {
-      if (s.lat && s.lng) return `${s.lat},${s.lng}`;
-      return encodeURIComponent(s.name + ' ' + (s.address || s.area + ' 東京'));
-    }).join('/');
-    window.open(`https://www.google.com/maps/dir/${wps}`, '_blank');
+    // Google Maps Directions URL: 各地点をスポット名+住所で指定（名称が表示される）
+    const origin = sorted[0];
+    const dest = sorted[sorted.length - 1];
+    const waypoints = sorted.slice(1, -1).map(s =>
+      encodeURIComponent(s.name + ' ' + (s.address || ''))
+    ).join('|');
+    const originStr = encodeURIComponent(origin.name + ' ' + (origin.address || ''));
+    const destStr = encodeURIComponent(dest.name + ' ' + (dest.address || ''));
+    let url = `https://www.google.com/maps/dir/?api=1&origin=${originStr}&destination=${destStr}`;
+    if (waypoints) url += `&waypoints=${waypoints}`;
+    window.open(url, '_blank');
   };
   const list = document.getElementById('route-list');
   list.innerHTML = sorted.map((s, i) => `
@@ -1043,6 +1071,13 @@ function renderSaved() {
         </div>
       </div>
     </div>`).join('');
+}
+
+function showNotifToast() {
+  showToast('通知機能はフェーズ2で実装予定です');
+}
+function showMyPageToast() {
+  showToast('マイページはフェーズ2で実装予定です');
 }
 
 // ── TOAST ──
