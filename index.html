@@ -903,6 +903,14 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
     </div>
 
     <div style="margin:12px 20px 0;">
+      <!-- 出発地表示 -->
+      <div id="route-origin-bar" style="display:none;margin-bottom:8px;padding:10px 14px;background:rgba(201,169,110,0.08);border:0.5px solid rgba(201,169,110,0.2);border-radius:10px;align-items:center;gap:8px;">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="var(--gold)" stroke-width="1.4"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4z"/><circle cx="8" cy="6" r="1.5"/></svg>
+        <div>
+          <div style="font-size:8px;letter-spacing:0.2em;color:rgba(201,169,110,0.6);text-transform:uppercase;">出発地</div>
+          <div id="route-origin-text" style="font-size:11px;color:var(--gold);margin-top:1px;"></div>
+        </div>
+      </div>
       <button id="route-maps-btn" style="width:100%;padding:15px;background:var(--gold);color:var(--black);border-radius:12px;font-family:var(--sans);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="6" r="2.5"/><path d="M7 1C4.2 1 2 3.2 2 6c0 4 5 8 5 8s5-4 5-8c0-2.8-2.2-5-5-5z"/></svg>
         Google Maps でルートを開く
@@ -1481,16 +1489,41 @@ function renderRoute() {
   document.getElementById('route-count').textContent = sorted.length;
   const areas = [...new Set(sorted.map(s => s.area))];
   document.getElementById('route-area').textContent = areas.slice(0,2).join(' · ') + (areas.length > 2 ? '…' : '');
+
+  // 出発地バーの表示
+  const homeAddress = localStorage.getItem('scene_home_address');
+  const originBar = document.getElementById('route-origin-bar');
+  const originText = document.getElementById('route-origin-text');
+  if (homeAddress && originBar && originText) {
+    originBar.style.display = 'flex';
+    originText.textContent = homeAddress;
+  } else if (originBar) {
+    originBar.style.display = 'none';
+  }
+
   // 2件以上でないと所要時間は出さない
   document.getElementById('route-time').textContent = sorted.length >= 2 ? `約${Math.round((sorted.length - 1) * 20)}分` : '—';
   document.getElementById('route-maps-btn').onclick = () => {
-    // Google Maps Directions URL: 各地点をスポット名+住所で指定（名称が表示される）
-    const origin = sorted[0];
+    const homeAddress = localStorage.getItem('scene_home_address');
     const dest = sorted[sorted.length - 1];
-    const waypoints = sorted.slice(1, -1).map(s =>
-      encodeURIComponent(s.name + ' ' + (s.address || ''))
-    ).join('|');
-    const originStr = encodeURIComponent(origin.name + ' ' + (origin.address || ''));
+
+    let originStr, waypoints;
+
+    if (homeAddress) {
+      // 自宅住所を起点に、全スポットを経由地に
+      originStr = encodeURIComponent(homeAddress);
+      waypoints = sorted.slice(0, -1).map(s =>
+        encodeURIComponent(s.name + ' ' + (s.address || ''))
+      ).join('|');
+    } else {
+      // 自宅住所なし → 最初のスポットを起点に
+      const origin = sorted[0];
+      originStr = encodeURIComponent(origin.name + ' ' + (origin.address || ''));
+      waypoints = sorted.slice(1, -1).map(s =>
+        encodeURIComponent(s.name + ' ' + (s.address || ''))
+      ).join('|');
+    }
+
     const destStr = encodeURIComponent(dest.name + ' ' + (dest.address || ''));
     let url = `https://www.google.com/maps/dir/?api=1&origin=${originStr}&destination=${destStr}`;
     if (waypoints) url += `&waypoints=${waypoints}`;
