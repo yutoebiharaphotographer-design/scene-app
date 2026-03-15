@@ -299,7 +299,7 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
 
   <div class="hero-card" id="home-hero" onclick="">
     <div class="hero-photo">
-      <img id="home-hero-img" src="https://images.pexels.com/photos/1251175/pexels-photo-1251175.jpeg?w=800&h=600&fit=crop" alt="">
+      <img id="home-hero-img" src="" alt="" style="display:none" onerror="this.style.display='none'">
       <div class="hero-grad"></div>
     </div>
     <div class="hero-body">
@@ -365,6 +365,7 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
     </div>
     <div class="filter-bar">
       <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="event" id="filter-event" style="border-color:var(--gold);color:var(--gold);">🎪 期間限定</button>
       <button class="filter-btn" data-cat="café">Café</button>
       <button class="filter-btn" data-cat="nature">Nature</button>
       <button class="filter-btn" data-cat="art">Art</button>
@@ -606,6 +607,7 @@ const catMap = {
   '横丁・グルメ': 'market',
 };
 
+
 function buildRecommendFeed() {
   // 好み・履歴からスコアリング
   const moods = JSON.parse(localStorage.getItem('scene_mood') || '[]');
@@ -671,25 +673,31 @@ function buildRecommendFeed() {
 
 function setHeroEvent(ev, spot) {
   const hero = document.getElementById('home-hero');
-  const img = hero.querySelector('img');
+  const img = document.getElementById('home-hero-img');
   if (ev.cover_url) { img.src = ev.cover_url; img.style.display = 'block'; }
-  document.getElementById('home-hero-cat').textContent = `🎪 期間限定イベント · ${ev.area || ''}`;
-  document.getElementById('home-hero-name').textContent = ev.title;
-  document.getElementById('home-hero-area').textContent = ev.description?.slice(0, 40) + '…';
+  else { img.style.display = 'none'; }
+
+  const end = new Date(ev.end_date);
+  const diff = Math.ceil((end - new Date()) / (1000*60*60*24));
+  const count = allEvents.length;
+
+  // feature_titleがあれば特集名、なければデフォルト
+  const featureTitle = ev.feature_title || '🎪 期間限定特集';
+  const featureDesc = ev.feature_desc || (count + '件開催中');
+
+  document.getElementById('home-hero-cat').textContent = '期間限定特集';
+  document.getElementById('home-hero-name').textContent = featureTitle;
+  document.getElementById('home-hero-area').textContent = featureDesc + '  ·  残り' + diff + '日';
+
   const badge = hero.querySelector('.hero-badge');
-  if (badge) {
-    const end = new Date(ev.end_date);
-    const diff = Math.ceil((end - new Date()) / (1000*60*60*24));
-    badge.textContent = `📅 残り${diff}日`;
-  }
-  hero.onclick = () => {
-    if (spot) openDetail(spot.id);
-  };
+  if (badge) badge.textContent = 'すべてのイベントを見る →';
+
+  hero.onclick = () => showEventTab();
 }
 
 function setHeroSpot(spot) {
   const hero = document.getElementById('home-hero');
-  const img = hero.querySelector('img');
+  const img = document.getElementById('home-hero-img');
   if (spot.cover_url) { img.src = spot.cover_url; img.style.display = 'block'; }
   else { img.style.display = 'none'; }
   document.getElementById('home-hero-cat').textContent = lbl(spot.category) + ' · ' + spot.area;
@@ -727,6 +735,21 @@ function showHome() {
 
 function showExplore() {
   showTab('explore');
+}
+
+function showEventTab() {
+  exploreCat = 'event';
+  showTab('explore');
+  // フィルターボタンの状態を更新
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  const eventBtn = document.getElementById('filter-event');
+  if (eventBtn) {
+    eventBtn.classList.add('active');
+    eventBtn.style.background = 'var(--gold)';
+    eventBtn.style.color = 'var(--black)';
+    eventBtn.style.borderColor = 'var(--gold)';
+  }
+  renderGrid();
 }
 
 function showTab(tab) {
@@ -819,7 +842,13 @@ function setCat(el, cat) {
 // ── EXPLORE ──
 function renderGrid() {
   let spots = allSpots;
-  if (exploreCat !== 'all') spots = spots.filter(s => s.category === exploreCat);
+  if (exploreCat === 'event') {
+    // eventsテーブルのspot_idに紐づくスポットを表示
+    const eventSpotIds = allEvents.map(e => e.spot_id).filter(Boolean);
+    spots = allSpots.filter(s => eventSpotIds.includes(s.id));
+  } else if (exploreCat !== 'all') {
+    spots = spots.filter(s => s.category === exploreCat);
+  }
   if (exploreQ) {
     const q = exploreQ.toLowerCase();
     spots = spots.filter(s => s.name.toLowerCase().includes(q) || s.area.toLowerCase().includes(q) || (s.tags||[]).some(t=>t.includes(q)));
@@ -848,8 +877,20 @@ function renderGrid() {
 
 // Filter buttons
 document.querySelectorAll('.filter-btn').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(x => {
+    x.classList.remove('active');
+    // 期間限定ボタンのスタイルをリセット
+    if (x.dataset.cat === 'event') {
+      x.style.background = 'transparent';
+      x.style.color = 'var(--gold)';
+      x.style.borderColor = 'var(--gold)';
+    }
+  });
   b.classList.add('active');
+  if (b.dataset.cat === 'event') {
+    b.style.background = 'var(--gold)';
+    b.style.color = 'var(--black)';
+  }
   exploreCat = b.dataset.cat;
   renderGrid();
 }));
