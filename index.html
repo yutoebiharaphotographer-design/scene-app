@@ -1035,7 +1035,14 @@ function transition(callback) {
 
 const SB_URL = 'https://vuxsvwymtjamjgvdyxuz.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1eHN2d3ltdGphbWpndmR5eHV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0MTMyMDcsImV4cCI6MjA4ODk4OTIwN30.QSZhQtWTp-JzUhJFweufYh71gqLOVLR1KwhmqHTN488';
-const db = supabase.createClient(SB_URL, SB_KEY);
+const db = supabase.createClient(SB_URL, SB_KEY, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  }
+});
+window.db = db;
 
 let allSpots = [], allEvents = [], exploreCat = 'all', exploreQ = '';
 
