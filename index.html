@@ -260,13 +260,16 @@ html, body { background: var(--cream); color: var(--black); font-family: var(--s
     <div class="onb-bar" id="ob2"></div>
   </div>
   <div class="onb-step-lbl" id="onb-step">Step 01 / 03</div>
-  <div class="onb-q" id="onb-q">どんな場所が<br>好きですか？</div>
+  <div class="onb-q" id="onb-q">今週末、どんな気分<br>ですか？</div>
   <div class="onb-chips" id="onb-chips">
-    <div class="onb-chip" onclick="this.classList.toggle('sel')">カフェ</div>
-    <div class="onb-chip" onclick="this.classList.toggle('sel')">自然・公園</div>
-    <div class="onb-chip" onclick="this.classList.toggle('sel')">アート</div>
-    <div class="onb-chip" onclick="this.classList.toggle('sel')">建築・街並み</div>
-    <div class="onb-chip" onclick="this.classList.toggle('sel')">マーケット</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">のんびりしたい</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">刺激が欲しい</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">写真を撮りたい</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">美味しいものを食べたい</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">アートに触れたい</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">自然の中にいたい</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">街を散歩したい</div>
+    <div class="onb-chip" onclick="this.classList.toggle('sel')">夜を楽しみたい</div>
   </div>
   <div class="onb-actions">
     <button class="onb-btn" id="onb-btn" onclick="nextOnbStep()">次へ</button>
@@ -635,8 +638,11 @@ function buildRecommendFeed() {
   // エリアスコア
   const areaKeywords = prefAreas.flatMap(a => a.split('・'));
 
+  // 重複除去（同じスポットが複数回登録されている場合）
+  const uniqueSpots = allSpots.filter((s, i, arr) => arr.findIndex(x => x.id === s.id) === i);
+
   // スポットスコアリング
-  const scored = allSpots
+  const scored = uniqueSpots
     .filter(s => !saved.includes(s.id)) // 保存済みは除外
     .map(s => {
       let score = 0;
@@ -686,11 +692,11 @@ function setHeroSpot(spot) {
   const img = hero.querySelector('img');
   if (spot.cover_url) { img.src = spot.cover_url; img.style.display = 'block'; }
   else { img.style.display = 'none'; }
-  document.getElementById('home-hero-cat').textContent = \`\${lbl(spot.category)} · \${spot.area}\`;
+  document.getElementById('home-hero-cat').textContent = lbl(spot.category) + ' · ' + spot.area;
   document.getElementById('home-hero-name').textContent = spot.name;
   document.getElementById('home-hero-area').textContent = spot.address || '';
   const badge = hero.querySelector('.hero-badge');
-  if (badge) badge.textContent = \`🌅 \${spot.best_time?.split('–')[0] || ''} がおすすめ\`;
+  if (badge) badge.textContent = '🌅 ' + (spot.best_time ? spot.best_time.split('–')[0] : '') + ' がおすすめ';
   hero.onclick = () => openDetail(spot.id);
 }
 
@@ -716,6 +722,7 @@ function showHome() {
   showScreen('home');
   document.getElementById('bottom-nav').style.display = 'flex';
   setActiveTab('home');
+  if (allSpots.length) buildRecommendFeed();
 }
 
 function showExplore() {
@@ -1136,20 +1143,36 @@ document.getElementById('saved-to-route-btn').addEventListener('click', function
 // ── LOAD ──
 async function init() {
   try {
-    const { data, error } = await db.from('spots').select('*').order('id');
+    // スポット取得
+    const { data: spotsData, error } = await db.from('spots').select('*').order('id');
     if (error) throw error;
-    allSpots = data;
-    buildHomeHScroll(data);
+    allSpots = spotsData;
     renderGrid();
     renderHomeSaved();
     updateRouteBanner();
+
+    // イベント取得（今日以降が終了日のもの）
+    const today = new Date().toISOString().slice(0,10);
+    const { data: eventsData } = await db.from('events')
+      .select('*')
+      .eq('is_active', true)
+      .gte('end_date', today)
+      .order('start_date');
+    allEvents = eventsData || [];
+
+    // レコメンド構築（イベント含む）
+    buildRecommendFeed();
+
   } catch(e) {
     console.error(e);
-    document.getElementById('spot-grid').innerHTML = '<div class="empty"><div class="empty-t">Error</div><div class="empty-s">Supabase にデータを投入してください</div></div>';
+    document.getElementById('spot-grid').innerHTML = '<div class="empty"><div class="empty-t">Error</div><div class="empty-s">データを読み込めませんでした</div></div>';
   } finally {
-    // ロード完了 → オンボーディング表示
     setTimeout(() => {
-      showScreen('onb');
+      if (localStorage.getItem('scene_onb_done')) {
+        showHome();
+      } else {
+        showScreen('onb');
+      }
     }, 800);
   }
 }
