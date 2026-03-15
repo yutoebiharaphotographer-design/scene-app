@@ -674,6 +674,7 @@ function buildRecommendFeed() {
 function setHeroEvent(ev, spot) {
   const hero = document.getElementById('home-hero');
   const img = document.getElementById('home-hero-img');
+  console.log('setHeroEvent cover_url:', ev.cover_url);
   if (ev.cover_url) { img.src = ev.cover_url; img.style.display = 'block'; }
   else { img.style.display = 'none'; }
 
